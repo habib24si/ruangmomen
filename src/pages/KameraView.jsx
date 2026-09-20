@@ -9,6 +9,7 @@ function KameraView({ template, onSelesai }) {
   const [kameraAktif, setKameraAktif] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [previewTemplate, setPreviewTemplate] = useState(null)
+  const [facingMode, setFacingMode] = useState('user')
   
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
@@ -46,19 +47,27 @@ function KameraView({ template, onSelesai }) {
     }
   }, [])
 
-  const aktifkanKamera = async () => {
+  const aktifkanKamera = async (mode) => {
+    const fm = mode === 'environment' || mode === 'user' ? mode : facingMode
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { 
+      // Hentikan stream lama jika masih ada
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop())
+        streamRef.current = null
+      }
+
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
           width: { ideal: 1280 },
           height: { ideal: 720 },
-          facingMode: 'user'
-        } 
+          facingMode: fm
+        }
       })
-      
+
       if (videoRef.current) {
         videoRef.current.srcObject = stream
         streamRef.current = stream
+        setFacingMode(fm)
         setKameraAktif(true)
         setErrorMessage('')
       }
@@ -66,6 +75,11 @@ function KameraView({ template, onSelesai }) {
       console.error('Error mengakses kamera:', error)
       setErrorMessage('Tidak dapat mengakses kamera. Pastikan Anda memberikan izin akses kamera.')
     }
+  }
+
+  const balikKamera = () => {
+    const next = facingMode === 'user' ? 'environment' : 'user'
+    aktifkanKamera(next)
   }
 
   const matikanKamera = () => {
@@ -104,9 +118,16 @@ function KameraView({ template, onSelesai }) {
       const context = canvas.getContext('2d')
       canvas.width = video.videoWidth
       canvas.height = video.videoHeight
-      
+
+      // Foto selfie dicerminkan agar sesuai tampilan di layar
+      if (facingMode === 'user') {
+        context.translate(canvas.width, 0)
+        context.scale(-1, 1)
+      }
+
       // Gambar video ke canvas
       context.drawImage(video, 0, 0, canvas.width, canvas.height)
+      context.setTransform(1, 0, 0, 1, 0, 0)
       
       // Konversi canvas ke data URL
       const dataURL = canvas.toDataURL('image/jpeg', 0.95)
@@ -169,6 +190,7 @@ function KameraView({ template, onSelesai }) {
                 autoPlay 
                 playsInline
                 className={kameraAktif ? 'video-aktif' : 'video-nonaktif'}
+                style={{ transform: facingMode === 'user' ? 'scaleX(-1)' : 'none' }}
               />
               <canvas ref={canvasRef} style={{ display: 'none' }} />
               
@@ -195,6 +217,17 @@ function KameraView({ template, onSelesai }) {
             </div>
 
             <div className="kontrol-kamera">
+              {kameraAktif && (
+                <button
+                  className="tombol tombol-sekunder tombol-balik"
+                  onClick={balikKamera}
+                  disabled={sedangAmbilFoto}
+                  title={facingMode === 'user' ? 'Ganti ke kamera belakang' : 'Ganti ke kamera depan'}
+                  aria-label="Balik kamera"
+                >
+                  🔄
+                </button>
+              )}
               {daftarFoto.length < jumlahFoto && kameraAktif && (
                 <>
                   <button 

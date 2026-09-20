@@ -165,6 +165,20 @@ video {
   padding: 14px 40px;
 }
 
+.kamera-view .kontrol-kamera .tombol-balik {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
+  padding: 0;
+  font-size: 20px;
+  line-height: 1;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .progress-bar {
   width: 100%;
   height: 4px;
