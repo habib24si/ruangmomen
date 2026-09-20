@@ -1,0 +1,84 @@
+.halaman-pilih-template {
+  text-align: center;
+}
+
+.template-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.template-card {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 20px;
+  padding: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 3px solid transparent;
+}
+
+.template-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  border-color: #667eea;
+}
+
+.template-preview {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+  min-height: 200px;
+  display: grid;
+  gap: 10px;
+}
+
+.template-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.template-6 {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+
+.foto-placeholder {
+  background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%);
+  border-radius: 10px;
+  border: 2px dashed #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+  position: relative;
+}
+
+.foto-placeholder::after {
+  content: '📷';
+  font-size: 30px;
+  opacity: 0.3;
+}
+
+.template-judul {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.template-deskripsi {
+  color: #666;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.template-card .btn {
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .template-grid {
+    grid-template-columns: 1fr;
+  }
+}

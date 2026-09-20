@@ -1,0 +1,369 @@
+.kamera-view {
+  width: 100%;
+  max-width: 1400px;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 90px;
+}
+
+.konten-kamera {
+  background: white;
+  border-radius: 16px;
+  padding: 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 10px 15px rgba(0, 0, 0, 0.05);
+  animation: fadeIn 0.4s ease;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.konten-kamera h2 {
+  color: #2d3748;
+  margin-bottom: 16px;
+  font-size: 1.25em;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: -0.3px;
+}
+
+.error-message {
+  background: #fff5f5;
+  border: 1px solid #feb2b2;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.error-message p {
+  color: #c53030;
+  margin-bottom: 12px;
+  font-size: 0.938em;
+}
+
+.layout-container {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 20px;
+  align-items: start;
+  flex: 1;
+  min-height: 0;
+}
+
+.kamera-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+}
+
+.area-kamera {
+  position: relative;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  width: 100%;
+  height: 480px;
+  max-height: calc(90vh - 250px);
+}
+
+video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-aktif {
+  display: block;
+}
+
+.video-nonaktif {
+  display: none;
+}
+
+.flash-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+}
+
+.hitung-mundur {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 96px;
+  font-weight: 600;
+  color: white;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.4);
+  animation: pulseCount 0.8s ease;
+}
+
+@keyframes pulseCount {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+.preview-foto-kecil {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.thumbnail {
+  width: 72px;
+  height: 54px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.kontrol-kamera {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.tombol-foto {
+  font-size: 15px;
+  padding: 14px 40px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #2d3748;
+  transition: width 0.3s ease;
+  border-radius: 4px;
+}
+
+.preview-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+}
+
+.preview-header {
+  text-align: center;
+  padding: 12px 16px;
+  background: #f7fafc;
+  border-radius: 8px;
+}
+
+.preview-header h3 {
+  color: #2d3748;
+  font-size: 1.1em;
+  font-weight: 600;
+  margin: 0;
+}
+
+.preview-header p {
+  color: #718096;
+  font-size: 0.875em;
+  margin: 4px 0 0 0;
+}
+
+.preview-template-container {
+  background: #f7fafc;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  min-height: 400px;
+  max-height: calc(90vh - 200px);
+  overflow: auto;
+}
+
+.preview-placeholder {
+  text-align: center;
+  color: #a0aec0;
+  padding: 40px 20px;
+}
+
+.preview-placeholder-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.preview-placeholder p {
+  font-size: 0.875em;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.preview-template-image {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: fadeInScale 0.3s ease;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .layout-container {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .area-kamera {
+    height: 400px;
+  }
+  
+  .preview-template-container {
+    min-height: 300px;
+    max-height: 450px;
+  }
+}
+
+/* Penyesuaian layar kecil (HP / Android) */
+@media (max-width: 640px) {
+  .kamera-view {
+    padding: 12px;
+  }
+
+  .konten-kamera {
+    padding: 16px;
+    border-radius: 12px;
+    max-height: 95vh;
+  }
+
+  .konten-kamera h2 {
+    font-size: 1.1em;
+    margin-bottom: 12px;
+  }
+
+  .layout-container {
+    gap: 12px;
+  }
+
+  /* Kamera jadi potret agar framing selfie lebih pas di HP */
+  .area-kamera {
+    height: 350px;
+  }
+
+  .hitung-mundur {
+    font-size: 72px;
+  }
+
+  .thumbnail {
+    width: 54px;
+    height: 40px;
+  }
+
+  .preview-foto-kecil {
+    bottom: 10px;
+    left: 10px;
+    gap: 6px;
+  }
+
+  .kontrol-kamera {
+    gap: 8px;
+  }
+
+  .kontrol-kamera .tombol {
+    flex: 1;
+    font-size: 0.9em;
+  }
+
+  .tombol-foto {
+    padding: 12px 16px;
+    width: 100%;
+  }
+
+  .preview-header h3 {
+    font-size: 1em;
+  }
+
+  .preview-header p {
+    font-size: 0.813em;
+  }
+
+  .preview-template-container {
+    min-height: 250px;
+    max-height: 350px;
+    padding: 12px;
+  }
+}
+
+/* Desktop: Layout optimal */
+@media (min-width: 1025px) {
+  .layout-container {
+    gap: 24px;
+  }
+
+  .area-kamera {
+    height: 520px;
+  }
+}
