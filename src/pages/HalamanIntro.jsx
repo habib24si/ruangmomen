@@ -5,7 +5,7 @@ function HalamanIntro({ onMulai }) {
     <div className="halaman-intro">
       <div className="intro-content">
         <div className="intro-icon">📸</div>
-        <h1 className="intro-judul">Selamat Datang di Photobooth HSA</h1>
+        <h1 className="intro-judul">Selamat Datang di RuangMomen</h1>
         <p className="intro-deskripsi">
           Abadikan momen spesial Anda dengan photobooth interaktif kami!
         </p>

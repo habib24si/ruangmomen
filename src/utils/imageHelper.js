@@ -17,7 +17,7 @@ export const roundRectPath = (ctx, x, y, width, height, radius) => {
   buildRoundRectPath(ctx, x, y, width, height, radius)
 }
 
-export const drawImageCoverMode = (ctx, img, x, y, width, height, radius = 0) => {
+export const drawImageCoverMode = (ctx, img, x, y, width, height, radius = 0, rotation = 0) => {
   // Hitung aspect ratio
   const imgAspect = img.width / img.height
   const frameAspect = width / height
@@ -40,6 +40,14 @@ export const drawImageCoverMode = (ctx, img, x, y, width, height, radius = 0) =>
   
   // Simpan state, beri opsi clip rounded corner agar foto tidak kaku
   ctx.save()
+  // Rotasi mengelilingi titik tengah area (untuk polaroid miring)
+  if (rotation) {
+    const cx = x + width / 2
+    const cy = y + height / 2
+    ctx.translate(cx, cy)
+    ctx.rotate((rotation * Math.PI) / 180)
+    ctx.translate(-cx, -cy)
+  }
   if (radius > 0) {
     buildRoundRectPath(ctx, x, y, width, height, radius)
     ctx.clip()

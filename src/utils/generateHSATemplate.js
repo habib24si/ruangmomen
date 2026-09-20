@@ -40,10 +40,10 @@ export const generateHSATemplate = () => {
     ctx.fillStyle = '#ffffff'
     ctx.font = 'bold 32px Arial'
     ctx.textAlign = 'center'
-    ctx.fillText('HSA', canvas.width / 2, 60)
+    ctx.fillText('RuangMomen', canvas.width / 2, 60)
     
     ctx.font = 'italic 42px Brush Script MT, cursive'
-    ctx.fillText('Photobooth', canvas.width / 2, 105)
+    ctx.fillText('', canvas.width / 2, 105)
     
     // Decorative line
     ctx.strokeStyle = '#64ffda'
@@ -113,7 +113,7 @@ export const generateHSATemplate = () => {
     // HSA Logo at bottom
     ctx.font = 'bold 18px Arial'
     ctx.fillStyle = '#ffffff'
-    ctx.fillText('HSA', canvas.width / 2, 1280)
+    ctx.fillText('RuangMomen', canvas.width / 2, 1280)
     
     const dataUrl = canvas.toDataURL('image/png')
     resolve({ dataUrl, positions })
@@ -158,10 +158,10 @@ export const generateHSAPreview = (photos) => {
       ctx.fillStyle = '#ffffff'
       ctx.font = `bold ${32 * scale}px Arial`
       ctx.textAlign = 'center'
-      ctx.fillText('HSA', canvas.width / 2, 60 * scale)
+      ctx.fillText('RuangMomen', canvas.width / 2, 60 * scale)
       
       ctx.font = `italic ${42 * scale}px Arial`
-      ctx.fillText('Photobooth', canvas.width / 2, 105 * scale)
+      ctx.fillText('', canvas.width / 2, 105 * scale)
       
       // Decorative line
       ctx.strokeStyle = '#64ffda'
@@ -236,7 +236,7 @@ export const generateHSAPreview = (photos) => {
         // HSA Logo
         ctx.font = `bold ${18 * scale}px Arial`
         ctx.fillStyle = '#ffffff'
-        ctx.fillText('HSA', canvas.width / 2, 1280 * scale)
+        ctx.fillText('RuangMomen', canvas.width / 2, 1280 * scale)
       }
       
       // Draw frames and photos

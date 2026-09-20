@@ -152,7 +152,7 @@ export const generateHSATemplate = () => {
     // Brand kecil berjarak di paling bawah
     ctx.fillStyle = GOLD
     ctx.font = 'bold 12px Georgia, "Times New Roman", serif'
-    ctx.fillText('H S A   ·   P H O T O B O O T H', W / 2, 1305)
+    ctx.fillText('R U A N G   M O M E N', W / 2, 1305)
 
     const dataUrl = canvas.toDataURL('image/png')
     resolve({ dataUrl, positions })

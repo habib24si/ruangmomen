@@ -7,11 +7,68 @@ function HasilFoto({ daftarFoto, template, onKembali, onUlangi }) {
   const canvasRef = useRef(null)
   const [previewImage, setPreviewImage] = useState(null)
   const [isGenerating, setIsGenerating] = useState(true)
+  const [showFilterPanel, setShowFilterPanel] = useState(false)
+  const [selectedFilter, setSelectedFilter] = useState('original')
+  const [filteredPhotos, setFilteredPhotos] = useState(daftarFoto)
 
-  // Generate preview saat komponen dimuat
+  // Daftar filter yang tersedia
+  const filters = [
+    { id: 'original', name: 'Original', filter: 'none' },
+    { id: 'grayscale', name: 'Black & White', filter: 'grayscale(100%)' },
+    { id: 'sepia', name: 'Sepia', filter: 'sepia(100%)' },
+    { id: 'vintage', name: 'Vintage', filter: 'sepia(50%) contrast(1.1) brightness(0.95)' },
+    { id: 'warm', name: 'Warm', filter: 'saturate(1.3) hue-rotate(-10deg) brightness(1.05)' },
+    { id: 'cool', name: 'Cool', filter: 'saturate(1.2) hue-rotate(10deg) brightness(0.95)' },
+    { id: 'bright', name: 'Bright', filter: 'brightness(1.15) contrast(1.05)' },
+    { id: 'contrast', name: 'High Contrast', filter: 'contrast(1.3) saturate(1.1)' },
+    { id: 'fade', name: 'Faded', filter: 'contrast(0.85) brightness(1.1) saturate(0.9)' }
+  ]
+
+  // Generate preview saat komponen dimuat atau filter berubah
   useEffect(() => {
     generatePreview()
-  }, [])
+  }, [filteredPhotos])
+
+  // Apply filter ke foto
+  const applyFilter = async (filterId) => {
+    setSelectedFilter(filterId)
+    const filter = filters.find(f => f.id === filterId)
+    
+    if (filterId === 'original') {
+      setFilteredPhotos(daftarFoto)
+      return
+    }
+
+    setIsGenerating(true)
+    
+    // Apply CSS filter ke setiap foto
+    const newFilteredPhotos = await Promise.all(
+      daftarFoto.map(photoSrc => applyFilterToImage(photoSrc, filter.filter))
+    )
+    
+    setFilteredPhotos(newFilteredPhotos)
+  }
+
+  const applyFilterToImage = (imageSrc, filterCSS) => {
+    return new Promise((resolve) => {
+      const img = new Image()
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+        
+        canvas.width = img.width
+        canvas.height = img.height
+        
+        // Apply CSS filter
+        ctx.filter = filterCSS
+        ctx.drawImage(img, 0, 0)
+        ctx.filter = 'none'
+        
+        resolve(canvas.toDataURL('image/jpeg', 0.95))
+      }
+      img.src = imageSrc
+    })
+  }
 
   const generatePreview = async () => {
     try {
@@ -19,7 +76,7 @@ function HasilFoto({ daftarFoto, template, onKembali, onUlangi }) {
       console.log('Generating final preview...')
       
       // Generate preview dengan scale lebih besar untuk tampilan (50%)
-      const preview = await generateFinalPreview(daftarFoto, template, 0.5)
+      const preview = await generateFinalPreview(filteredPhotos, template, 0.5)
       setPreviewImage(preview)
       setIsGenerating(false)
       console.log('Final preview generated')
@@ -82,7 +139,8 @@ function HasilFoto({ daftarFoto, template, onKembali, onUlangi }) {
                   pos.y * scale,
                   pos.width * scale,
                   pos.height * scale,
-                  (pos.radius || 0) * scale
+                  (pos.radius || 0) * scale,
+                  pos.rotation || 0
                 )
                 checkAllLoaded()
               }
@@ -119,14 +177,14 @@ function HasilFoto({ daftarFoto, template, onKembali, onUlangi }) {
       ctx.drawImage(templateImg, 0, 0)
       
       // Load dan gambar semua foto sesuai posisi di template dengan cover mode
-      const promises = daftarFoto.map((fotoSrc, index) => {
+      const promises = filteredPhotos.map((fotoSrc, index) => {
         return new Promise((resolve) => {
           const img = new Image()
           img.onload = () => {
             const pos = template.fotoPositions[index]
             if (pos) {
               // Gunakan cover mode agar foto tidak terdistorsi
-              drawImageCoverMode(ctx, img, pos.x, pos.y, pos.width, pos.height, pos.radius || 0)
+              drawImageCoverMode(ctx, img, pos.x, pos.y, pos.width, pos.height, pos.radius || 0, pos.rotation || 0)
             }
             resolve()
           }
@@ -190,15 +248,48 @@ function HasilFoto({ daftarFoto, template, onKembali, onUlangi }) {
 
         <canvas ref={canvasRef} style={{ display: 'none' }} />
 
+        {/* Filter Panel */}
+        <div className="filter-section">
+          <button 
+            className="tombol tombol-filter" 
+            onClick={() => setShowFilterPanel(!showFilterPanel)}
+          >
+            {showFilterPanel ? '✕ Tutup Filter' : '🎨 Edit & Filter'}
+          </button>
+
+          {showFilterPanel && (
+            <div className="filter-panel">
+              <h3>Pilih Filter</h3>
+              <div className="filter-grid">
+                {filters.map(filter => (
+                  <button
+                    key={filter.id}
+                    className={`filter-option ${selectedFilter === filter.id ? 'active' : ''}`}
+                    onClick={() => applyFilter(filter.id)}
+                  >
+                    <div 
+                      className="filter-preview" 
+                      style={{ filter: filter.filter }}
+                    >
+                      <div className="filter-demo-box"></div>
+                    </div>
+                    <span>{filter.name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
         <div className="tombol-group">
           <button className="tombol tombol-utama" onClick={downloadFoto}>
-            Download Foto
+            📥 Download Foto
           </button>
           <button className="tombol tombol-sekunder" onClick={onUlangi}>
-            Ambil Lagi
+            📷 Ambil Lagi
           </button>
           <button className="tombol tombol-sekunder" onClick={onKembali}>
-            Kembali
+            🏠 Kembali
           </button>
         </div>
       </div>

@@ -81,7 +81,8 @@ export const generateTemplatePreview = (photos, template) => {
                 pos.y * scale,
                 pos.width * scale,
                 pos.height * scale,
-                (pos.radius || 0) * scale
+                (pos.radius || 0) * scale,
+                pos.rotation || 0
               )
               checkAllLoaded()
             }

@@ -6,6 +6,9 @@ import { ColorfulTemplateConfig } from './ColorfulTemplate'
 import { ElegantTemplateConfig } from './ElegantTemplate'
 import { FilmStripTemplateConfig } from './FilmStripTemplate'
 import { ArchiveMemoryTemplateConfig } from './ArchiveMemoryTemplate'
+import { GalleryClipTemplateConfig } from './GalleryClipTemplate'
+import { PolaroidScatterTemplateConfig } from './PolaroidScatterTemplate'
+import { InstagramGridTemplateConfig } from './InstagramGridTemplate'
 
 // Export array of all templates
 export const allTemplates = [
@@ -15,7 +18,10 @@ export const allTemplates = [
   ColorfulTemplateConfig,
   ElegantTemplateConfig,
   FilmStripTemplateConfig,
-  ArchiveMemoryTemplateConfig
+  ArchiveMemoryTemplateConfig,
+  GalleryClipTemplateConfig,
+  PolaroidScatterTemplateConfig,
+  InstagramGridTemplateConfig
 ]
 
 // Export individual templates untuk import langsung jika diperlukan
@@ -26,3 +32,6 @@ export { ColorfulTemplateConfig } from './ColorfulTemplate'
 export { ElegantTemplateConfig } from './ElegantTemplate'
 export { FilmStripTemplateConfig } from './FilmStripTemplate'
 export { ArchiveMemoryTemplateConfig } from './ArchiveMemoryTemplate'
+export { GalleryClipTemplateConfig } from './GalleryClipTemplate'
+export { PolaroidScatterTemplateConfig } from './PolaroidScatterTemplate'
+export { InstagramGridTemplateConfig } from './InstagramGridTemplate'

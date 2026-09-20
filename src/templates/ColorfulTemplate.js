@@ -32,11 +32,18 @@ export const generateColorfulTemplate = () => {
     ctx.fillText('FUN', canvas.width / 2, 100)
     
     ctx.font = 'bold 48px Arial'
+    // "PHOTOBOOTH" dalam SATU baris, tetap dua warna
+    ctx.textAlign = 'left'
+    const photoText = 'PHOTO'
+    const boothText = 'BOOTH'
+    const wPhoto = ctx.measureText(photoText).width
+    const wBooth = ctx.measureText(boothText).width
+    const startX = canvas.width / 2 - (wPhoto + wBooth) / 2
     ctx.fillStyle = '#ff6b6b'
-    ctx.fillText('PHOTO', canvas.width / 2, 150)
-    
+    ctx.fillText(photoText, startX, 160)
     ctx.fillStyle = '#4ecdc4'
-    ctx.fillText('BOOTH', canvas.width / 2, 195)
+    ctx.fillText(boothText, startX + wPhoto, 160)
+    ctx.textAlign = 'center'
     
     const positions = [
       { x: 125, y: 270, width: 600, height: 450 },
