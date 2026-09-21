@@ -12,6 +12,14 @@ function HasilFoto({ daftarFoto, template, onKembali, onUlangi, onUlangiSatuFoto
   const [filteredPhotos, setFilteredPhotos] = useState(daftarFoto)
   const [showPhotoSelector, setShowPhotoSelector] = useState(false)
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(null)
+  const [animasiUnduh, setAnimasiUnduh] = useState(false)
+
+  // Tutup animasi unduh setelah koreografi selesai
+  useEffect(() => {
+    if (!animasiUnduh) return
+    const t = setTimeout(() => setAnimasiUnduh(false), 2100)
+    return () => clearTimeout(t)
+  }, [animasiUnduh])
 
   // Daftar filter yang tersedia
   const filters = [
@@ -225,11 +233,21 @@ function HasilFoto({ daftarFoto, template, onKembali, onUlangi, onUlangiSatuFoto
     templateImg.src = template.image
   }
 
+  // Klik tombol download → jalankan animasi + unduh asli
+  const klikUnduh = () => {
+    if (animasiUnduh) return
+    setAnimasiUnduh(true)
+    downloadFoto()
+  }
+
   return (
     <div className="hasil-foto">
       <div className="konten-hasil">
+        <p className="hasil-eyebrow">Langkah 03 · Hasil Jadi</p>
         <h1>Hasil Foto</h1>
-        <p>Preview dengan template <strong>{template.nama}</strong></p>
+        <p className="hasil-sub">
+          dibingkai dengan <span className="pill-template">{template.nama}</span>
+        </p>
         
         {isGenerating ? (
           <div className="loading-preview">
@@ -249,6 +267,23 @@ function HasilFoto({ daftarFoto, template, onKembali, onUlangi, onUlangiSatuFoto
         )}
 
         <canvas ref={canvasRef} style={{ display: 'none' }} />
+
+        {!isGenerating && (
+          <>
+            <p className="hasil-keterangan">
+              <span>{new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })}</span>
+              <em>✦</em>
+              <span>ruang momen</span>
+            </p>
+
+            {/* kenangan mentah: foto asli sebelum dibingkai */}
+            <div className="strip-asli" title="foto asli">
+              {daftarFoto.map((f, i) => (
+                <img key={i} src={f} alt={`Foto asli ${i + 1}`} />
+              ))}
+            </div>
+          </>
+        )}
 
         {/* Photo Selector untuk Ulangi Foto Tertentu */}
         {showPhotoSelector && (
@@ -288,57 +323,100 @@ function HasilFoto({ daftarFoto, template, onKembali, onUlangi, onUlangiSatuFoto
           </div>
         )}
 
-        {/* Filter Panel */}
-        <div className="filter-section">
-          <button 
-            className="tombol tombol-filter" 
-            onClick={() => setShowFilterPanel(!showFilterPanel)}
-          >
-            {showFilterPanel ? '✕ Tutup Filter' : '🎨 Edit & Filter'}
-          </button>
-
-          {showFilterPanel && (
-            <div className="filter-panel">
-              <h3>Pilih Filter</h3>
-              <div className="filter-grid">
-                {filters.map(filter => (
-                  <button
-                    key={filter.id}
-                    className={`filter-option ${selectedFilter === filter.id ? 'active' : ''}`}
-                    onClick={() => applyFilter(filter.id)}
+        {/* Panel filter — dibuka lewat ikon 🎨 */}
+        {showFilterPanel && (
+          <div className="filter-panel">
+            <h3>Pilih Filter</h3>
+            <div className="filter-grid">
+              {filters.map(filter => (
+                <button
+                  key={filter.id}
+                  className={`filter-option ${selectedFilter === filter.id ? 'active' : ''}`}
+                  onClick={() => applyFilter(filter.id)}
+                >
+                  <div 
+                    className="filter-preview" 
+                    style={{ filter: filter.filter }}
                   >
-                    <div 
-                      className="filter-preview" 
-                      style={{ filter: filter.filter }}
-                    >
-                      <div className="filter-demo-box"></div>
-                    </div>
-                    <span>{filter.name}</span>
-                  </button>
-                ))}
-              </div>
+                    <div className="filter-demo-box"></div>
+                  </div>
+                  <span>{filter.name}</span>
+                </button>
+              ))}
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        <div className="tombol-group">
-          <button className="tombol tombol-utama" onClick={downloadFoto}>
-            📥 Download Foto
+        {/* Aksi utama: 1 tombol unduh + deretan ikon kecil */}
+        <div className="aksi-hasil">
+          <button className="tombol tombol-utama tombol-unduh" onClick={klikUnduh}>
+            DOWNLOAD
           </button>
-          <button 
-            className="tombol tombol-info" 
-            onClick={() => setShowPhotoSelector(!showPhotoSelector)}
-          >
-            🔄 Ulang Foto Tertentu
-          </button>
-          <button className="tombol tombol-sekunder" onClick={onUlangi}>
-            📷 Ambil Lagi Semua
-          </button>
-          <button className="tombol tombol-sekunder" onClick={onKembali}>
-            🏠 Kembali
-          </button>
+
+          <div className="aksi-ikon">
+            <button
+              className={`ikon ${showFilterPanel ? 'aktif' : ''}`}
+              onClick={() => setShowFilterPanel(!showFilterPanel)}
+              title="Filter foto"
+            >
+              🎨 Filter
+            </button>
+            <button
+              className={`ikon ${showPhotoSelector ? 'aktif' : ''}`}
+              onClick={() => setShowPhotoSelector(!showPhotoSelector)}
+              title="Ambil ulang salah satu foto saja"
+            >
+              🔄 Ulang 1 Foto
+            </button>
+            <button
+              className="ikon"
+              onClick={onUlangi}
+              title="Ambil ulang dari foto pertama"
+            >
+              📷 Ulang Semua
+            </button>
+            <button
+              className="ikon"
+              onClick={onKembali}
+              title="Kembali ke katalog"
+            >
+              ← Kembali
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Animasi unduh: foto dicetak masuk ke slot + progress */}
+      {animasiUnduh && (
+        <div className="unduh-overlay">
+          <div className="unduh-flash"></div>
+          <div className="unduh-ring"></div>
+          <div className="unduh-ring ring-2"></div>
+          <div className="unduh-ring ring-3"></div>
+          <div className="unduh-partikel">
+            {Array.from({ length: 16 }).map((_, i) => (
+              <span
+                key={i}
+                style={{ '--sudut': `${i * 22.5}deg`, '--tunda': `${1.15 + (i % 4) * 0.08}s` }}
+              >
+                {['✦', '♥', '✧', '↓'][i % 4]}
+              </span>
+            ))}
+          </div>
+
+          <div className="unduh-stage">
+            {previewImage && <img src={previewImage} alt="" className="unduh-foto" />}
+            <div className="unduh-tray">
+              <div className="celah"></div>
+            </div>
+          </div>
+
+          <div className="unduh-bar"><span></span></div>
+          <p className="unduh-teks">
+            <span className="cek">✓</span> tersimpan di perangkatmu
+          </p>
+        </div>
+      )}
     </div>
   )
 }
