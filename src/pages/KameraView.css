@@ -112,38 +112,7 @@
 .area-kamera video {
   width: 100%;
   height: 100%;
-  /* contain: tampilkan SELURUH frame kamera, bagian yang ter-crop ditunjukkan panduan */
-  object-fit: contain;
-  background: #000;
-}
-
-/* Panduan area foto: kotak putih putus-putus, luar area digelapkan */
-.panduan-crop {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border: 2px dashed rgba(255, 255, 255, 0.85);
-  border-radius: 10px;
-  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.55);
-  pointer-events: none;
-  z-index: 5;
-  transition: width 0.3s ease, height 0.3s ease;
-}
-
-.panduan-crop .label-panduan {
-  position: absolute;
-  top: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.9);
-  background: rgba(0, 0, 0, 0.45);
-  padding: 3px 10px;
-  border-radius: 999px;
+  object-fit: cover;
 }
 
 .video-aktif {

@@ -14,7 +14,6 @@ function KameraView({ template, onSelesai, fotoAwal = [], ulangIndex = null }) {
   const [previewTemplate, setPreviewTemplate] = useState(null)
   const [facingMode, setFacingMode] = useState('user')
   const [sudahAmbilUlang, setSudahAmbilUlang] = useState(false)
-  const [ukuranVideo, setUkuranVideo] = useState(null)
   
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
@@ -32,20 +31,6 @@ function KameraView({ template, onSelesai, fotoAwal = [], ulangIndex = null }) {
   const rasioSlot = slotAktif && slotAktif.height > 0
     ? slotAktif.width / slotAktif.height
     : 4 / 3
-
-  // Guide area crop: tunjangan bagian frame video yang AKAN masuk foto
-  // (pencocokan dengan center-crop yang dipakai saat tangkapFoto)
-  let panduanCrop = { width: '100%', height: '100%' }
-  if (ukuranVideo && ukuranVideo.w > 0 && ukuranVideo.h > 0) {
-    const rasioVideo = ukuranVideo.w / ukuranVideo.h
-    if (rasioVideo > rasioSlot) {
-      // video lebih lebar -> kiri-kanan terpotong
-      panduanCrop = { height: '100%', width: `${(rasioSlot / rasioVideo) * 100}%` }
-    } else if (rasioVideo < rasioSlot) {
-      // video lebih tinggi -> atas-bawah terpotong
-      panduanCrop = { width: '100%', height: `${(rasioVideo / rasioSlot) * 100}%` }
-    }
-  }
 
   // Update preview saat foto berubah
   useEffect(() => {
@@ -254,21 +239,10 @@ function KameraView({ template, onSelesai, fotoAwal = [], ulangIndex = null }) {
                 ref={videoRef} 
                 autoPlay 
                 playsInline
-                onLoadedMetadata={(e) => {
-                  const v = e.target
-                  setUkuranVideo({ w: v.videoWidth, h: v.videoHeight })
-                }}
                 className={kameraAktif ? 'video-aktif' : 'video-nonaktif'}
                 style={{ transform: facingMode === 'user' ? 'scaleX(-1)' : 'none' }}
               />
               <canvas ref={canvasRef} style={{ display: 'none' }} />
-
-              {/* Panduan area foto (bagian luar area tidak ikut ter-crop) */}
-              {kameraAktif && (
-                <div className="panduan-crop" style={panduanCrop}>
-                  <span className="label-panduan">area foto</span>
-                </div>
-              )}
               
               <div className="flash-effect"></div>
               
