@@ -2,20 +2,31 @@ import { useState, useRef, useEffect } from 'react'
 import { generateTemplatePreview } from '../utils/generatePreview'
 import './KameraView.css'
 
-function KameraView({ template, onSelesai }) {
-  const [daftarFoto, setDaftarFoto] = useState([])
+function KameraView({ template, onSelesai, fotoAwal = [], ulangIndex = null }) {
+  // Mode ulang: hanya mengambil ulang 1 foto (indeks `ulangIndex`), foto lain tetap
+  const modeUlang = ulangIndex !== null && ulangIndex !== undefined
+
+  const [daftarFoto, setDaftarFoto] = useState(modeUlang ? fotoAwal : [])
   const [sedangAmbilFoto, setSedangAmbilFoto] = useState(false)
   const [hitunganMundur, setHitunganMundur] = useState(null)
   const [kameraAktif, setKameraAktif] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [previewTemplate, setPreviewTemplate] = useState(null)
   const [facingMode, setFacingMode] = useState('user')
+  const [sudahAmbilUlang, setSudahAmbilUlang] = useState(false)
   
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
   const streamRef = useRef(null)
 
   const jumlahFoto = template.jumlahFoto
+
+  // Rasio area kamera mengikuti rasio slot foto template (kotak/persegi panjang)
+  // agar preview kamera sama dengan hasil akhir & tidak ada crop mendadak
+  const posisiPertama = template.fotoPositions && template.fotoPositions[0]
+  const rasioSlot = posisiPertama && posisiPertama.height > 0
+    ? posisiPertama.width / posisiPertama.height
+    : 4 / 3
 
   // Update preview saat foto berubah
   useEffect(() => {
@@ -91,7 +102,8 @@ function KameraView({ template, onSelesai }) {
   }
 
   const ambilFoto = () => {
-    if (sedangAmbilFoto || daftarFoto.length >= jumlahFoto) return
+    if (sedangAmbilFoto) return
+    if (modeUlang ? sudahAmbilUlang : daftarFoto.length >= jumlahFoto) return
     
     setSedangAmbilFoto(true)
     setHitunganMundur(3)
@@ -116,8 +128,22 @@ function KameraView({ template, onSelesai }) {
     
     if (video && canvas) {
       const context = canvas.getContext('2d')
-      canvas.width = video.videoWidth
-      canvas.height = video.videoHeight
+      const vw = video.videoWidth
+      const vh = video.videoHeight
+
+      // Potong tengah frame video sesuai rasio slot template
+      let sw = vw
+      let sh = vh
+      if (vw / vh > rasioSlot) {
+        sw = Math.round(vh * rasioSlot)
+      } else {
+        sh = Math.round(vw / rasioSlot)
+      }
+      const sx = Math.round((vw - sw) / 2)
+      const sy = Math.round((vh - sh) / 2)
+
+      canvas.width = sw
+      canvas.height = sh
 
       // Foto selfie dicerminkan agar sesuai tampilan di layar
       if (facingMode === 'user') {
@@ -125,15 +151,17 @@ function KameraView({ template, onSelesai }) {
         context.scale(-1, 1)
       }
 
-      // Gambar video ke canvas
-      context.drawImage(video, 0, 0, canvas.width, canvas.height)
+      // Gambar video ke canvas (sudah terpotong sesuai rasio)
+      context.drawImage(video, sx, sy, sw, sh, 0, 0, sw, sh)
       context.setTransform(1, 0, 0, 1, 0, 0)
       
       // Konversi canvas ke data URL
       const dataURL = canvas.toDataURL('image/jpeg', 0.95)
       
-      // Tambahkan foto ke daftar
-      const fotoTerbaru = [...daftarFoto, dataURL]
+      // Tambahkan/ganti foto sesuai mode
+      const fotoTerbaru = modeUlang
+        ? daftarFoto.map((foto, i) => (i === ulangIndex ? dataURL : foto))
+        : [...daftarFoto, dataURL]
       setDaftarFoto(fotoTerbaru)
       
       // Flash effect
@@ -146,6 +174,16 @@ function KameraView({ template, onSelesai }) {
       }
       
       setSedangAmbilFoto(false)
+      
+      // Mode ulang: langsung selesai setelah 1 foto pengganti diambil
+      if (modeUlang) {
+        setSudahAmbilUlang(true)
+        setTimeout(() => {
+          matikanKamera()
+          onSelesai(fotoTerbaru)
+        }, 800)
+        return
+      }
       
       // Jika sudah selesai semua foto
       if (fotoTerbaru.length >= jumlahFoto) {
@@ -168,9 +206,17 @@ function KameraView({ template, onSelesai }) {
   return (
     <div className="kamera-view">
       <div className="konten-kamera">
+        <p className="kamera-eyebrow">Langkah 02 · Studio Foto</p>
         <h2>
-          Foto {daftarFoto.length + 1} dari {jumlahFoto}
+          {modeUlang
+            ? `Mengulang Foto ${ulangIndex + 1} dari ${jumlahFoto}`
+            : `Foto ${daftarFoto.length + 1} dari ${jumlahFoto}`}
         </h2>
+        {modeUlang && (
+          <p className="petunjuk-ulang">
+            Ambil satu foto baru untuk mengganti Foto {ulangIndex + 1}. Foto lainnya tetap.
+          </p>
+        )}
         
         {errorMessage && (
           <div className="error-message">
@@ -184,7 +230,7 @@ function KameraView({ template, onSelesai }) {
         <div className="layout-container">
           {/* Bagian Kamera - Kiri */}
           <div className="kamera-section">
-            <div className="area-kamera">
+            <div className="area-kamera" style={{ '--rasio-slot': rasioSlot }}>
               <video 
                 ref={videoRef} 
                 autoPlay 
@@ -228,17 +274,17 @@ function KameraView({ template, onSelesai }) {
                   🔄
                 </button>
               )}
-              {daftarFoto.length < jumlahFoto && kameraAktif && (
+              {(modeUlang ? !sudahAmbilUlang : daftarFoto.length < jumlahFoto) && kameraAktif && (
                 <>
                   <button 
                     className="tombol tombol-utama tombol-foto"
                     onClick={ambilFoto}
                     disabled={sedangAmbilFoto}
                   >
-                    {sedangAmbilFoto ? 'Bersiap...' : 'Ambil Foto'}
+                    {sedangAmbilFoto ? 'Bersiap...' : modeUlang ? 'Ambil Foto Pengganti' : 'Ambil Foto'}
                   </button>
                   
-                  {daftarFoto.length > 0 && (
+                  {!modeUlang && daftarFoto.length > 0 && (
                     <button 
                       className="tombol tombol-sekunder"
                       onClick={hapusFotoTerakhir}
@@ -253,7 +299,7 @@ function KameraView({ template, onSelesai }) {
             <div className="progress-bar">
               <div 
                 className="progress-fill"
-                style={{ width: `${(daftarFoto.length / jumlahFoto) * 100}%` }}
+                style={{ width: `${(modeUlang ? (sudahAmbilUlang ? 1 : 0) : daftarFoto.length) / jumlahFoto * 100}%` }}
               ></div>
             </div>
           </div>

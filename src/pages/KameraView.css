@@ -9,10 +9,11 @@
 }
 
 .konten-kamera {
-  background: white;
-  border-radius: 16px;
-  padding: 4px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 10px 15px rgba(0, 0, 0, 0.05);
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 22px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 10px rgba(16, 24, 40, 0.06);
   animation: fadeIn 0.4s ease;
   width: 100%;
   max-height: 90dvh;
@@ -20,19 +21,52 @@
   flex-direction: column;
 }
 
+/* Label kecil di atas judul, dengan garis di kiri-kanan */
+.kamera-view .kamera-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 0 0 10px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  font-size: 11px;
+  font-weight: 700;
+  color: #9ca3af !important;
+}
+
+.kamera-view .kamera-eyebrow::before,
+.kamera-view .kamera-eyebrow::after {
+  content: '';
+  display: inline-block;
+  width: 36px;
+  height: 1px;
+  background: #d1d5db;
+}
+
 .konten-kamera h2 {
-  color: #2d3748;
+  color: #111827;
   margin-bottom: 16px;
-  font-size: 1.25em;
-  font-weight: 600;
+  font-size: 1.15em;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   text-align: center;
-  letter-spacing: -0.3px;
+}
+
+/* Petunjuk saat mode ulang satu foto */
+.kamera-view .petunjuk-ulang {
+  text-align: center;
+  color: #db2777;
+  font-size: 0.95em;
+  font-weight: 500;
+  margin: -8px 0 16px;
 }
 
 .error-message {
   background: #fff5f5;
   border: 1px solid #feb2b2;
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 16px;
   margin-bottom: 20px;
   text-align: center;
@@ -61,13 +95,18 @@
 }
 
 .area-kamera {
+  /* --rasio-slot diset inline dari rasio foto template (kotak/persegi panjang) */
+  --rasio-slot: 1.333;
   position: relative;
   background: #000;
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
   width: 100%;
-  height: 480px;
+  aspect-ratio: var(--rasio-slot);
+  height: auto;
   max-height: calc(90dvh - 250px);
+  max-width: calc((90dvh - 250px) * var(--rasio-slot));
+  margin: 0 auto;
 }
 
 video {
@@ -102,7 +141,7 @@ video {
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 96px;
-  font-weight: 600;
+  font-weight: 900;
   color: white;
   text-shadow: 0 2px 16px rgba(0, 0, 0, 0.4);
   animation: pulseCount 0.8s ease;
@@ -134,7 +173,9 @@ video {
 
 .thumbnail {
   width: 72px;
-  height: 54px;
+  height: auto;
+  /* ikut rasio slot template (variabel diwarisi dari .area-kamera) */
+  aspect-ratio: var(--rasio-slot, 1.333);
   object-fit: cover;
   border-radius: 6px;
   border: 2px solid white;
@@ -161,8 +202,20 @@ video {
 }
 
 .tombol-foto {
-  font-size: 15px;
-  padding: 14px 40px;
+  font-size: 13px;
+  padding: 15px 42px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  border-radius: 12px;
+  background: #111827;
+  color: #ffffff;
+}
+
+.kamera-view .kontrol-kamera .tombol-foto:hover {
+  background: #000000;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px -6px rgba(17, 24, 39, 0.45);
 }
 
 .kamera-view .kontrol-kamera .tombol-balik {
@@ -174,6 +227,7 @@ video {
   font-size: 20px;
   line-height: 1;
   border-radius: 12px;
+  border: 1px solid #e5e7eb;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -182,14 +236,14 @@ video {
 .progress-bar {
   width: 100%;
   height: 4px;
-  background: #e2e8f0;
+  background: #eef1f5;
   border-radius: 4px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: #2d3748;
+  background: #111827;
   transition: width 0.3s ease;
   border-radius: 4px;
 }
@@ -203,27 +257,31 @@ video {
 
 .preview-header {
   text-align: center;
-  padding: 12px 16px;
-  background: #f7fafc;
-  border-radius: 8px;
+  padding: 14px 16px;
+  background: #ffffff;
+  border: 1.5px dashed rgba(17, 24, 39, 0.35);
+  border-radius: 12px;
 }
 
 .preview-header h3 {
-  color: #2d3748;
-  font-size: 1.1em;
-  font-weight: 600;
+  color: #111827;
+  font-size: 0.9em;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
   margin: 0;
 }
 
 .preview-header p {
-  color: #718096;
-  font-size: 0.875em;
+  color: #6b7280;
+  font-size: 0.8em;
   margin: 4px 0 0 0;
 }
 
 .preview-template-container {
-  background: #f7fafc;
-  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
   padding: 16px;
   display: flex;
   justify-content: center;
@@ -258,8 +316,8 @@ video {
   max-height: 100%;
   object-fit: contain;
   display: block;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(16, 24, 40, 0.10);
   animation: fadeInScale 0.3s ease;
 }
 
@@ -293,7 +351,8 @@ video {
   }
   
   .area-kamera {
-    height: 400px;
+    max-height: 400px;
+    max-width: calc(400px * var(--rasio-slot));
   }
   
   .preview-template-container {
@@ -310,12 +369,22 @@ video {
 
   .konten-kamera {
     padding: 16px;
-    border-radius: 12px;
+    border-radius: 14px;
     max-height: 95dvh;
   }
 
+  .kamera-view .kamera-eyebrow {
+    letter-spacing: 0.2em;
+    font-size: 10px;
+  }
+
+  .kamera-view .kamera-eyebrow::before,
+  .kamera-view .kamera-eyebrow::after {
+    width: 22px;
+  }
+
   .konten-kamera h2 {
-    font-size: 1.1em;
+    font-size: 1.05em;
     margin-bottom: 12px;
   }
 
@@ -323,9 +392,10 @@ video {
     gap: 12px;
   }
 
-  /* Kamera jadi potret agar framing selfie lebih pas di HP */
+  /* Kamera mengikuti rasio slot foto template */
   .area-kamera {
-    height: 350px;
+    max-height: 350px;
+    max-width: calc(350px * var(--rasio-slot));
   }
 
   .hitung-mundur {
@@ -334,7 +404,6 @@ video {
 
   .thumbnail {
     width: 54px;
-    height: 40px;
   }
 
   .preview-foto-kecil {
@@ -379,6 +448,7 @@ video {
   }
 
   .area-kamera {
-    height: 520px;
+    max-height: 520px;
+    max-width: calc(520px * var(--rasio-slot));
   }
 }

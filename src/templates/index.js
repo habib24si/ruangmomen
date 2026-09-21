@@ -8,7 +8,8 @@ import { FilmStripTemplateConfig } from './FilmStripTemplate'
 import { ArchiveMemoryTemplateConfig } from './ArchiveMemoryTemplate'
 import { GalleryClipTemplateConfig } from './GalleryClipTemplate'
 import { PolaroidScatterTemplateConfig } from './PolaroidScatterTemplate'
-import { InstagramGridTemplateConfig } from './InstagramGridTemplate'
+import { CutePastelTemplateConfig } from './CutePastelTemplate'
+import { KoranRetroTemplateConfig } from './KoranRetroTemplate'
 
 // Export array of all templates
 export const allTemplates = [
@@ -21,7 +22,8 @@ export const allTemplates = [
   ArchiveMemoryTemplateConfig,
   GalleryClipTemplateConfig,
   PolaroidScatterTemplateConfig,
-  InstagramGridTemplateConfig
+  CutePastelTemplateConfig,
+  KoranRetroTemplateConfig
 ]
 
 // Export individual templates untuk import langsung jika diperlukan
@@ -34,4 +36,5 @@ export { FilmStripTemplateConfig } from './FilmStripTemplate'
 export { ArchiveMemoryTemplateConfig } from './ArchiveMemoryTemplate'
 export { GalleryClipTemplateConfig } from './GalleryClipTemplate'
 export { PolaroidScatterTemplateConfig } from './PolaroidScatterTemplate'
-export { InstagramGridTemplateConfig } from './InstagramGridTemplate'
+export { CutePastelTemplateConfig } from './CutePastelTemplate'
+export { KoranRetroTemplateConfig } from './KoranRetroTemplate'

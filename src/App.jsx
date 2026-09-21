@@ -9,6 +9,7 @@ function App() {
   const [halaman, setHalaman] = useState('awal') // awal, pilihTemplate, kamera, hasil
   const [templateTerpilih, setTemplateTerpilih] = useState(null) // Menyimpan object template
   const [daftarFoto, setDaftarFoto] = useState([])
+  const [indeksUlang, setIndeksUlang] = useState(null) // Index foto yang diulang (null = ambil semua baru)
 
   // Fungsi untuk pindah halaman
   const mulaiAplikasi = () => {
@@ -18,6 +19,7 @@ function App() {
   const pilihTemplate = (template) => {
     setTemplateTerpilih(template)
     setDaftarFoto([])
+    setIndeksUlang(null)
     setHalaman('kamera')
   }
 
@@ -30,12 +32,20 @@ function App() {
     setHalaman('awal')
     setTemplateTerpilih(null)
     setDaftarFoto([])
+    setIndeksUlang(null)
   }
 
   const ulangiPengambilan = () => {
     setHalaman('pilihTemplate')
     setTemplateTerpilih(null)
     setDaftarFoto([])
+    setIndeksUlang(null)
+  }
+
+  const ulangiSatuFoto = (index) => {
+    // Kembali ke kamera khusus untuk mengulang foto ke-`index` saja
+    setIndeksUlang(index)
+    setHalaman('kamera')
   }
 
   return (
@@ -52,6 +62,8 @@ function App() {
         <KameraView 
           template={templateTerpilih}
           onSelesai={selesaiFoto}
+          fotoAwal={daftarFoto}
+          ulangIndex={indeksUlang}
         />
       )}
 
@@ -61,6 +73,7 @@ function App() {
           template={templateTerpilih}
           onKembali={kembaliKeAwal}
           onUlangi={ulangiPengambilan}
+          onUlangiSatuFoto={ulangiSatuFoto}
         />
       )}
     </div>

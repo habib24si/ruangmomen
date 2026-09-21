@@ -1,23 +1,68 @@
+import { useEffect, useState } from 'react'
+import { getTemplatesWithImages } from '../data/templates'
 import './HalamanAwal.css'
 import logoRuangMomen from '../assets/logo/Logo Ruang Momen (1).png'
 
 function HalamanAwal({ onMulai }) {
+  const [previews, setPreviews] = useState([])
+
+  useEffect(() => {
+    let aktif = true
+    getTemplatesWithImages().then((list) => {
+      if (aktif) {
+        setPreviews(list.map((t) => t.thumbnail).filter(Boolean))
+      }
+    })
+    return () => {
+      aktif = false
+    }
+  }, [])
+
+  // Duplikasi daftar agar animasi marquee mulus tanpa jeda
+  const pitaAtas = [...previews, ...previews, ...previews, ...previews]
+  const pitaBawah = [...previews.slice().reverse(), ...previews.slice().reverse(), ...previews.slice().reverse(), ...previews.slice().reverse()]
+
   return (
     <div className="halaman-awal">
-      <div className="konten-awal">
-        <div className="icon-kamera">
-          <img src={logoRuangMomen} alt="Ruang Momen Logo" className="logo-image" />
+      {/* Pita foto template bergerak - atas */}
+      <div className="pita-foto pita-atas">
+        <div className="pita-track track-kiri">
+          {pitaAtas.map((src, i) => (
+            <img key={`atas-${i}`} src={src} alt="" className="foto-pita" />
+          ))}
         </div>
-        <h1>
-          Selamat Datang di <span className="brand-nama">RuangMomen</span>
-        </h1>
-        <p>Ambil foto dengan mudah dan cepat!</p>
-        <p className="deskripsi">
-          Pilih template yang Anda suka, ambil foto, dan download hasilnya langsung ke perangkat Anda.
+      </div>
+
+      {/* Konten tengah */}
+      <div className="pusat-awal">
+        <div className="hero-awal">
+          <div className="judul-aksen">
+            <span className="judul-besar">RUANG</span>
+            <span className="judul-besar judul-outline">MOMEN</span>
+          </div>
+          <button className="tombol-mulai-bulat" onClick={onMulai}>
+            MULAI
+          </button>
+        </div>
+        <p className="tagline-awal">
+          <span className="garis-tagline"></span>
+          Satu klik · banyak momen
+          <span className="garis-tagline"></span>
         </p>
-        <button className="tombol tombol-utama" onClick={onMulai}>
-          Mulai Sekarang
-        </button>
+      </div>
+
+      {/* Pita foto template bergerak - bawah */}
+      <div className="pita-foto pita-bawah">
+        <div className="pita-track track-kanan">
+          {pitaBawah.map((src, i) => (
+            <img key={`bawah-${i}`} src={src} alt="" className="foto-pita" />
+          ))}
+        </div>
+      </div>
+
+      <div className="pojok-logo">
+        <img src={logoRuangMomen} alt="Ruang Momen Logo" className="logo-sudut" />
+        <span className="hak-cipta">©2026</span>
       </div>
     </div>
   )

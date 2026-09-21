@@ -3,13 +3,15 @@ import { generateTemplatePreview } from '../utils/generatePreview'
 import { drawImageCoverMode } from '../utils/imageHelper'
 import './HasilFoto.css'
 
-function HasilFoto({ daftarFoto, template, onKembali, onUlangi }) {
+function HasilFoto({ daftarFoto, template, onKembali, onUlangi, onUlangiSatuFoto }) {
   const canvasRef = useRef(null)
   const [previewImage, setPreviewImage] = useState(null)
   const [isGenerating, setIsGenerating] = useState(true)
   const [showFilterPanel, setShowFilterPanel] = useState(false)
   const [selectedFilter, setSelectedFilter] = useState('original')
   const [filteredPhotos, setFilteredPhotos] = useState(daftarFoto)
+  const [showPhotoSelector, setShowPhotoSelector] = useState(false)
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(null)
 
   // Daftar filter yang tersedia
   const filters = [
@@ -248,6 +250,44 @@ function HasilFoto({ daftarFoto, template, onKembali, onUlangi }) {
 
         <canvas ref={canvasRef} style={{ display: 'none' }} />
 
+        {/* Photo Selector untuk Ulangi Foto Tertentu */}
+        {showPhotoSelector && (
+          <div className="photo-selector-panel">
+            <h3>Pilih Foto yang Ingin Diulang</h3>
+            <p>Klik foto yang ingin Anda ambil ulang</p>
+            <div className="photo-selector-grid">
+              {filteredPhotos.map((photo, index) => (
+                <div 
+                  key={index} 
+                  className={`photo-selector-item ${selectedPhotoIndex === index ? 'selected' : ''}`}
+                  onClick={() => setSelectedPhotoIndex(index)}
+                >
+                  <img src={photo} alt={`Foto ${index + 1}`} />
+                  <div className="photo-selector-overlay">
+                    <span className="photo-number">Foto {index + 1}</span>
+                    {selectedPhotoIndex === index && <span className="check-mark">✓</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="photo-selector-actions">
+              <button 
+                className="tombol tombol-utama" 
+                onClick={() => onUlangiSatuFoto(selectedPhotoIndex)}
+                disabled={selectedPhotoIndex === null}
+              >
+                Ulang Foto Ini
+              </button>
+              <button 
+                className="tombol tombol-sekunder" 
+                onClick={() => setShowPhotoSelector(false)}
+              >
+                Batal
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Filter Panel */}
         <div className="filter-section">
           <button 
@@ -285,8 +325,14 @@ function HasilFoto({ daftarFoto, template, onKembali, onUlangi }) {
           <button className="tombol tombol-utama" onClick={downloadFoto}>
             📥 Download Foto
           </button>
+          <button 
+            className="tombol tombol-info" 
+            onClick={() => setShowPhotoSelector(!showPhotoSelector)}
+          >
+            🔄 Ulang Foto Tertentu
+          </button>
           <button className="tombol tombol-sekunder" onClick={onUlangi}>
-            📷 Ambil Lagi
+            📷 Ambil Lagi Semua
           </button>
           <button className="tombol tombol-sekunder" onClick={onKembali}>
             🏠 Kembali
