@@ -121,55 +121,34 @@ export const generateModernTemplate = () => {
     heart(205, 250, 22, 'rgba(249,168,212,0.9)')
     heart(875, 235, 20, 'rgba(196,181,253,0.9)')
 
-    // helper: gambar "RUANG MOMEN" vertikal (dipakai utk template & overlay)
-    const gambarTulisanVertikal = (c) => {
-      c.save()
-      c.textAlign = 'center'
-      c.textBaseline = 'middle'
-      c.font = '900 132px "Arial Black", Arial, sans-serif'
-      c.lineJoin = 'round'
-      const huruf = 'RUANG MOMEN'.split('')
-      const x = 100 // geser sedikit ke kanan, masih di luar frame foto
-      const startY = 420
-      const endY = 1780
-      const step = (endY - startY) / (huruf.length - 1)
+    // ===== REL DEKORATIF KIRI (pengganti tulisan vertikal) =====
+    // garis putus-putus gradient + hati & kelip berselang-seling
+    const railX = 100
+    ctx.save()
+    const railGrad = ctx.createLinearGradient(0, 400, 0, 1800)
+    railGrad.addColorStop(0, '#a855f7')
+    railGrad.addColorStop(0.5, '#d946ef')
+    railGrad.addColorStop(1, '#ec4899')
+    ctx.strokeStyle = railGrad
+    ctx.globalAlpha = 0.5
+    ctx.lineWidth = 4
+    ctx.setLineDash([2, 14])
+    ctx.lineCap = 'round'
+    ctx.beginPath()
+    ctx.moveTo(railX, 400)
+    ctx.lineTo(railX, 1800)
+    ctx.stroke()
+    ctx.setLineDash([])
+    ctx.restore()
 
-      // gradient ungu->pink membentang dari atas ke bawah seluruh kolom
-      const colGrad = c.createLinearGradient(0, startY - 60, 0, endY + 60)
-      colGrad.addColorStop(0, '#a855f7')
-      colGrad.addColorStop(0.5, '#d946ef')
-      colGrad.addColorStop(1, '#ec4899')
-
-      huruf.forEach((ch, i) => {
-        if (ch === ' ') return
-        const y = startY + i * step
-
-        // bayangan lembut di belakang huruf biar terasa "timbul"
-        c.shadowColor = 'rgba(168, 85, 247, 0.35)'
-        c.shadowBlur = 16
-        c.shadowOffsetY = 5
-
-        // outline putih tebal agar tetap terbaca saat menimpa foto
-        c.lineWidth = 16
-        c.strokeStyle = 'rgba(255,255,255,0.97)'
-        c.strokeText(ch, x, y)
-
-        c.shadowColor = 'transparent'
-        c.shadowBlur = 0
-        c.shadowOffsetY = 0
-        c.fillStyle = colGrad
-        c.fillText(ch, x, y)
-
-        // kelip kecil di highlight (aksen manis)
-        c.fillStyle = 'rgba(255,255,255,0.85)'
-        c.beginPath()
-        c.arc(x - 34, y - 40, 4, 0, Math.PI * 2)
-        c.fill()
-      })
-      c.restore()
-    }
-    // baked ke template supaya tetap terlihat di katalog
-    gambarTulisanVertikal(ctx)
+    const titikRel = [460, 720, 980, 1240, 1500, 1760]
+    titikRel.forEach((y, i) => {
+      if (i % 2 === 0) {
+        heart(railX, y, 28, accent(railX - 14, railX + 14))
+      } else {
+        sparkle(railX, y, 14, 'rgba(168,85,247,0.55)')
+      }
+    })
 
     // ===== PHOTOS =====
     const positions = [
@@ -250,30 +229,50 @@ export const generateModernTemplate = () => {
     ctx.textAlign = 'center'
     ctx.fillStyle = '#a0aec0'
     ctx.font = '24px Arial'
-    ctx.fillText(today, W / 2, H - 108)
-    ctx.fillStyle = accent(380, 700)
-    ctx.font = 'bold 22px Arial'
-    ctx.fillText('· ruangmomen ·', W / 2, H - 66)
-    heart(W / 2 - 200, H - 74, 22, 'rgba(249,168,212,0.9)')
-    heart(W / 2 + 200, H - 74, 22, 'rgba(196,181,253,0.9)')
+    ctx.fillText(today, W / 2, H - 168)
 
-    // ===== OVERLAY: tulisan vertikal di DEPAN foto (dipisah dr template) =====
-    const overlayCanvas = document.createElement('canvas')
-    overlayCanvas.width = W
-    overlayCanvas.height = H
-    const octx = overlayCanvas.getContext('2d')
-    gambarTulisanVertikal(octx)
-    const overlayUrl = overlayCanvas.toDataURL('image/png')
+    // bar ikon sosial: like / comment / share (daya tarik "share & tag")
+    const iconY = H - 108
+    const ikonSosmed = ['\u2764\uFE0F', '\uD83D\uDCAC', '\uD83D\uDCE4']
+    ikonSosmed.forEach((ikon, i) => {
+      const ix = W / 2 + (i - 1) * 110
+      ctx.save()
+      ctx.shadowColor = 'rgba(219, 39, 119, 0.22)'
+      ctx.shadowBlur = 14
+      ctx.shadowOffsetY = 5
+      ctx.beginPath()
+      ctx.arc(ix, iconY, 36, 0, Math.PI * 2)
+      ctx.fillStyle = '#ffffff'
+      ctx.fill()
+      ctx.restore()
+      ctx.beginPath()
+      ctx.arc(ix, iconY, 36, 0, Math.PI * 2)
+      ctx.strokeStyle = 'rgba(236,72,153,0.45)'
+      ctx.lineWidth = 2
+      ctx.setLineDash([2, 7])
+      ctx.lineCap = 'round'
+      ctx.stroke()
+      ctx.setLineDash([])
+      ctx.font = '30px "Segoe UI Emoji", "Apple Color Emoji", sans-serif'
+      ctx.fillText(ikon, ix, iconY + 11)
+    })
+
+    // CTA ajakan main — bikin penasaran & ngajak posting
+    ctx.fillStyle = accent(330, 750)
+    ctx.font = 'bold 26px Arial'
+    setSpacing('1px')
+    ctx.fillText('tag us @ruangmomen', W / 2, H - 36)
+    setSpacing('0px')
 
     const dataUrl = canvas.toDataURL('image/png')
-    resolve({ dataUrl, positions, overlay: overlayUrl })
+    resolve({ dataUrl, positions })
   })
 }
 
 export const ModernTemplateConfig = {
   id: 2,
   nama: 'Modern Gradient',
-  deskripsi: 'Story 9:16 putih bersih, frame gradient violet-pink membulat dengan aksen hati lucu',
+  deskripsi: 'Story 9:16 putih bersih, frame gradient violet-pink, rel hati & bar sosial media siap share',
   jumlahFoto: 3,
   style: 'modern',
   isDefault: true,

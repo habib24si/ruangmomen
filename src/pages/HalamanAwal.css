@@ -338,3 +338,115 @@
     width: 24px;
   }
 }
+
+/* ===================================== */
+/* ANIMASI DIAFRAGMA KAMERA (MULAI klik) */
+/* ===================================== */
+.pintu-kamera {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  overflow: hidden;
+  pointer-events: all;
+}
+
+/* cakram bilah diafragma menutup layar */
+.bilah-diafragma {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150vmax;
+  height: 150vmax;
+  margin: -75vmax 0 0 -75vmax;
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    #0c0a09 0deg 29deg,
+    #17191f 29deg 30deg
+  );
+  animation: diafragma-nutup 0.78s cubic-bezier(0.7, 0, 0.25, 1) forwards;
+}
+
+.bilah-diafragma::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(219, 39, 119, 0.16) 0%, transparent 38%);
+}
+
+@keyframes diafragma-nutup {
+  from { transform: scale(0) rotate(-140deg); }
+  to { transform: scale(1) rotate(0deg); }
+}
+
+/* cincin iris mengecil ke pusat */
+.cincin-iris {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 74vmax;
+  height: 74vmax;
+  margin: -37vmax 0 0 -37vmax;
+  border-radius: 50%;
+  animation: cincin-mengecil 0.8s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+.cincin-a {
+  border: 3px dashed rgba(219, 39, 119, 0.75);
+}
+
+.cincin-b {
+  border: 2px solid rgba(245, 239, 230, 0.4);
+  animation-delay: 0.14s;
+}
+
+@keyframes cincin-mengecil {
+  from { transform: scale(1.15) rotate(0deg); opacity: 0.95; }
+  to { transform: scale(0.03) rotate(120deg); opacity: 0; }
+}
+
+/* blitz penutup pergantian halaman */
+.kilat-layar {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, #fff 0%, rgba(255, 255, 255, 0.9) 45%, rgba(255, 236, 200, 0.55) 70%, transparent 85%);
+  opacity: 0;
+  animation: blitz 0.55s ease 0.8s forwards;
+}
+
+@keyframes blitz {
+  0% { opacity: 0; }
+  30% { opacity: 0.95; }
+  100% { opacity: 0; }
+}
+
+/* teks muncrat di atas layar gelap */
+.teks-pintu {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: #f5efe6;
+  font-weight: 800;
+  font-size: clamp(15px, 3.4vw, 24px);
+  letter-spacing: 0.55em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  animation: teks-muncul 0.5s ease 0.55s forwards;
+}
+
+.teks-pintu em {
+  color: #db2777;
+  font-style: normal;
+  letter-spacing: 0;
+}
+
+@keyframes teks-muncul {
+  from { opacity: 0; transform: translate(-50%, -30%) scale(0.88); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}

@@ -5,6 +5,18 @@ import logoRuangMomen from '../assets/logo/Logo Ruang Momen (1).png'
 
 function HalamanAwal({ onMulai }) {
   const [previews, setPreviews] = useState([])
+  const [animasiMulai, setAnimasiMulai] = useState(false)
+
+  // Mainkan animasi diafragma kamera, lalu pindah halaman saat layar tertutup
+  useEffect(() => {
+    if (!animasiMulai) return
+    const t = setTimeout(() => onMulai(), 1030)
+    return () => clearTimeout(t)
+  }, [animasiMulai, onMulai])
+
+  const klikMulai = () => {
+    if (!animasiMulai) setAnimasiMulai(true)
+  }
 
   useEffect(() => {
     let aktif = true
@@ -40,7 +52,7 @@ function HalamanAwal({ onMulai }) {
             <span className="judul-besar">RUANG</span>
             <span className="judul-besar judul-outline">MOMEN</span>
           </div>
-          <button className="tombol-mulai-bulat" onClick={onMulai}>
+          <button className="tombol-mulai-bulat" onClick={klikMulai}>
             MULAI
           </button>
         </div>
@@ -64,6 +76,23 @@ function HalamanAwal({ onMulai }) {
         <img src={logoRuangMomen} alt="Ruang Momen Logo" className="logo-sudut" />
         <span className="hak-cipta">©2026</span>
       </div>
+
+      {/* Animasi diafragma kamera saat MULAI diklik */}
+      {animasiMulai && (
+        <div className="pintu-kamera">
+          <div className="bilah-diafragma"></div>
+          <div className="cincin-iris cincin-a"></div>
+          <div className="cincin-iris cincin-b"></div>
+          <div className="kilat-layar"></div>
+          <p className="teks-pintu">
+            <span>cahaya</span>
+            <em>·</em>
+            <span>lensa</span>
+            <em>·</em>
+            <span>momen</span>
+          </p>
+        </div>
+      )}
     </div>
   )
 }
