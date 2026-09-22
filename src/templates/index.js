@@ -10,6 +10,7 @@ import { GalleryClipTemplateConfig } from './GalleryClipTemplate'
 import { PolaroidScatterTemplateConfig } from './PolaroidScatterTemplate'
 import { CutePastelTemplateConfig } from './CutePastelTemplate'
 import { KoranRetroTemplateConfig } from './KoranRetroTemplate'
+import { PolkadotTemplateConfig } from './PolkadotTemplate'
 
 // Export array of all templates
 export const allTemplates = [
@@ -23,7 +24,8 @@ export const allTemplates = [
   GalleryClipTemplateConfig,
   PolaroidScatterTemplateConfig,
   CutePastelTemplateConfig,
-  KoranRetroTemplateConfig
+  KoranRetroTemplateConfig,
+  PolkadotTemplateConfig
 ]
 
 // Export individual templates untuk import langsung jika diperlukan
@@ -38,3 +40,4 @@ export { GalleryClipTemplateConfig } from './GalleryClipTemplate'
 export { PolaroidScatterTemplateConfig } from './PolaroidScatterTemplate'
 export { CutePastelTemplateConfig } from './CutePastelTemplate'
 export { KoranRetroTemplateConfig } from './KoranRetroTemplate'
+export { PolkadotTemplateConfig } from './PolkadotTemplate'

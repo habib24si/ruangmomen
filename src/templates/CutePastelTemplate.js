@@ -45,9 +45,9 @@ export const generateCutePastelTemplate = () => {
     const canvas = document.createElement('canvas')
     const ctx = canvas.getContext('2d')
 
-    // Rasio 4:5 — rasio ideal feed Instagram
+    // Strip vertikal — 4 kartu ditata zig-zag dari atas ke bawah
     const W = (canvas.width = 1000)
-    const H = (canvas.height = 1250)
+    const H = (canvas.height = 2400)
 
     // ---------- LATAR PASTEL ----------
     const bg = ctx.createLinearGradient(0, 0, 0, H)
@@ -101,16 +101,17 @@ export const generateCutePastelTemplate = () => {
     ctx.fillText(tanggal.toUpperCase(), W / 2, 190)
 
     // ---------- GEOMETRI KARTU FOTO ----------
-    const PHOTO = 356
+    const PHOTO = 410
     const half = PHOTO / 2
-    const cardW = 404
-    const cardH = 404
+    const cardW = 460
+    const cardH = 460
 
+    // Zig-zag vertikal: cx bergantian kiri/kanan, kartu diperbesar.
     const cards = [
-      { cx: 282, cy: 486, a: -3 },
-      { cx: 718, cy: 486, a: 2.5 },
-      { cx: 282, cy: 878, a: 2 },
-      { cx: 718, cy: 878, a: -2.5 }
+      { cx: 262, cy: 480,  a: -4 },   // kiri atas
+      { cx: 738, cy: 940,  a:  3 },   // kanan
+      { cx: 262, cy: 1400, a: -3 },   // kiri
+      { cx: 738, cy: 1860, a:  4 }    // kanan bawah
     ]
 
     // posisi foto (kotak 1:1, rotasi ikut agar pas dengan bingkai)
@@ -161,23 +162,37 @@ export const generateCutePastelTemplate = () => {
       ctx.restore()
     })
 
-    // ---------- DEKORASI DI SELA KARTU ----------
-    drawHeart(ctx, W / 2, 682, 26, '#f472b6')
-    drawSparkle(ctx, W / 2 - 70, 640, 15, '#f9a8d4')
-    drawSparkle(ctx, W / 2 + 70, 724, 15, '#c4b5fd')
-    drawHeart(ctx, 88, 682, 14, '#f9a8d4')
-    drawHeart(ctx, W - 88, 682, 14, '#f9a8d4')
+    // ---------- DEKORASI DI SELA KARTU (3 sela zig-zag) ----------
+    // Sela 1 (antara kartu 1 & 2), y sekitar 710
+    drawHeart(ctx, W / 2, 710, 26, '#f472b6')
+    drawSparkle(ctx, W / 2 - 80, 670, 15, '#f9a8d4')
+    drawSparkle(ctx, W / 2 + 80, 754, 15, '#c4b5fd')
+    // Sela 2 (antara kartu 2 & 3), y sekitar 1170
+    drawHeart(ctx, W / 2, 1170, 26, '#f472b6')
+    drawSparkle(ctx, W / 2 + 80, 1130, 15, '#a7f3d0')
+    drawSparkle(ctx, W / 2 - 80, 1214, 15, '#f9a8d4')
+    // Sela 3 (antara kartu 3 & 4), y sekitar 1630
+    drawHeart(ctx, W / 2, 1630, 26, '#f472b6')
+    drawSparkle(ctx, W / 2 - 80, 1590, 15, '#f9a8d4')
+    drawSparkle(ctx, W / 2 + 80, 1674, 15, '#c4b5fd')
+    // Hati kecil di tepi (dekat tiap kartu)
+    drawHeart(ctx, 68, 480, 14, '#f9a8d4')
+    drawHeart(ctx, W - 68, 940, 14, '#f9a8d4')
+    drawHeart(ctx, 68, 1400, 14, '#f9a8d4')
+    drawHeart(ctx, W - 68, 1860, 14, '#f9a8d4')
 
-    // kelip di sudut-sudut
+    // Kelip di sudut-sudut kanvas
     drawSparkle(ctx, 96, 262, 18, '#fda4d0')
-    drawSparkle(ctx, W - 96, 1096, 18, '#fda4d0')
-    drawHeart(ctx, W - 100, 258, 16, '#f9a8d4')
-    drawHeart(ctx, 100, 1094, 16, '#f9a8d4')
+    drawSparkle(ctx, W - 96, 262, 18, '#fda4d0')
+    drawSparkle(ctx, 96, H - 262, 18, '#fda4d0')
+    drawSparkle(ctx, W - 96, H - 262, 18, '#fda4d0')
+    drawHeart(ctx, W - 100, 340, 16, '#f9a8d4')
+    drawHeart(ctx, 100, H - 340, 16, '#f9a8d4')
 
     // ---------- FOOTER ----------
     const pillW = 520
     const pillH = 86
-    const pillY = 1122
+    const pillY = 2278
     ctx.shadowColor = 'rgba(219, 39, 119, 0.16)'
     ctx.shadowBlur = 18
     ctx.shadowOffsetY = 8
@@ -212,7 +227,7 @@ export const generateCutePastelTemplate = () => {
 export const CutePastelTemplateConfig = {
   id: 10,
   nama: 'Cute Pastel',
-  deskripsi: 'Pastel pink dengan hati & kelip, 4 foto kotak imut siap posting Instagram',
+  deskripsi: 'Pastel pink zig-zag vertikal, 4 foto ditumpuk dari atas ke bawah dengan rotasi selang-seling',
   jumlahFoto: 4,
   style: 'cute',
   isDefault: false,
